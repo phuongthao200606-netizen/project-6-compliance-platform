@@ -1,0 +1,8 @@
+{
+  "name": "SBV RegTech Compliance Platform",
+  "description": "Regulation & Compliance Intelligence Platform for State Bank of Vietnam (SBV). AI legal citation, Diff comparison engine between TT 39/2016 and TT 12/2024, compliance checklist, and regulatory impact map.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
