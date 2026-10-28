@@ -114,15 +114,17 @@ export const Tab2Diff: React.FC<Tab2DiffProps> = ({ diffData, setDiffData }) => 
     return matchClass && matchApproval;
   });
 
-  // Chart statistics from original Streamlit app:
-  // Modified: 12, Added: 7, Removed: 2, Unchanged: 8
+  // Tính số liệu từ các bản ghi đang hiển thị, không gắn số demo cố định.
+  const totalArticles = diffData.length;
   const chartSlices = [
-    { label: 'Sửa đổi (Modified)', count: 12, percent: 41.4, color: '#f59e0b', ringClass: 'text-amber-500' },
-    { label: 'Thêm mới (Added)', count: 7, percent: 24.1, color: '#10b981', ringClass: 'text-emerald-500' },
-    { label: 'Bãi bỏ (Removed)', count: 2, percent: 6.9, color: '#ef4444', ringClass: 'text-red-500' },
-    { label: 'Giữ nguyên (Unchanged)', count: 8, percent: 27.6, color: '#64748b', ringClass: 'text-slate-500' },
-  ];
-  const totalArticles = chartSlices.reduce((acc, curr) => acc + curr.count, 0);
+    { label: 'Sửa đổi (Modified)', kind: 'Modified', color: '#f59e0b' },
+    { label: 'Thêm mới (Added)', kind: 'Added', color: '#10b981' },
+    { label: 'Bãi bỏ (Removed)', kind: 'Removed', color: '#ef4444' },
+    { label: 'Giữ nguyên (Unchanged)', kind: 'Unchanged', color: '#64748b' },
+  ].map(slice => {
+    const count = diffData.filter(item => item.classification === slice.kind).length;
+    return { ...slice, count, percent: totalArticles ? (count * 100 / totalArticles).toFixed(1) : '0.0' };
+  });
 
   return (
     <div className="space-y-6">
@@ -141,7 +143,7 @@ export const Tab2Diff: React.FC<Tab2DiffProps> = ({ diffData, setDiffData }) => 
           <span>Đối chiếu Biến động Quy định: TT 39/2016 vs TT 12/2024</span>
         </h2>
         <p className="text-sm text-slate-400 mt-1">
-          Công cụ Diff Engine nhận diện các sửa đổi pháp lý và hỗ trợ Phê duyệt nghiệp vụ (Human-in-the-loop).
+          Bảng đối chiếu mẫu và biên tập thủ công; chưa tự so sánh văn bản mới bằng LLM.
         </p>
       </div>
 
@@ -150,7 +152,7 @@ export const Tab2Diff: React.FC<Tab2DiffProps> = ({ diffData, setDiffData }) => 
         {/* Donut Chart representation */}
         <div className="lg:col-span-7 rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-lg flex flex-col justify-between">
           <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center justify-between">
-            <span>Phân bố Biến động Pháp lý (Diff Statistics)</span>
+            <span>Phân bố Bản ghi Diff (từ dữ liệu hiện tại)</span>
             <span className="text-sky-400 font-semibold">{totalArticles} Điều khoản</span>
           </div>
 
@@ -160,49 +162,20 @@ export const Tab2Diff: React.FC<Tab2DiffProps> = ({ diffData, setDiffData }) => 
               <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100">
                 {/* SVG Circumference = 2 * PI * 38 = 238.76 */}
                 {/* Modified: 41.4% = 98.8 */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="38"
-                  fill="transparent"
-                  stroke="#f59e0b"
-                  strokeWidth="16"
-                  strokeDasharray="98.8 238.8"
-                  strokeDashoffset="0"
-                />
-                {/* Added: 24.1% = 57.5 */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="38"
-                  fill="transparent"
-                  stroke="#10b981"
-                  strokeWidth="16"
-                  strokeDasharray="57.5 238.8"
-                  strokeDashoffset="-98.8"
-                />
-                {/* Removed: 6.9% = 16.5 */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="38"
-                  fill="transparent"
-                  stroke="#ef4444"
-                  strokeWidth="16"
-                  strokeDasharray="16.5 238.8"
-                  strokeDashoffset="-156.3"
-                />
-                {/* Unchanged: 27.6% = 65.9 */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="38"
-                  fill="transparent"
-                  stroke="#64748b"
-                  strokeWidth="16"
-                  strokeDasharray="65.9 238.8"
-                  strokeDashoffset="-172.8"
-                />
+                {chartSlices.map((slice, index) => {
+                  const circumference = 2 * Math.PI * 38;
+                  const preceding = chartSlices.slice(0, index).reduce((sum, item) => sum + item.count, 0);
+                  const denominator = Math.max(totalArticles, 1);
+                  return (
+                    <circle
+                      key={slice.kind}
+                      cx="50" cy="50" r="38" fill="transparent"
+                      stroke={slice.color} strokeWidth="16"
+                      strokeDasharray={`${(slice.count / denominator) * circumference} ${circumference}`}
+                      strokeDashoffset={-(preceding / denominator) * circumference}
+                    />
+                  );
+                })}
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                 <span className="text-2xl font-black text-white">{totalArticles}</span>
