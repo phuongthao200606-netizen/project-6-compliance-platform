@@ -20,11 +20,8 @@ export function App() {
   const [isKnowledgeBaseOpen, setIsKnowledgeBaseOpen] = useState<boolean>(false);
 
   // Configuration
-  const [apiKey, setApiKey] = useState<string>(() => {
-    return localStorage.getItem('sbv_regtech_apikey') || '';
-  });
   const [selectedModel, setSelectedModel] = useState<string>(() => {
-    return localStorage.getItem('sbv_regtech_model') || 'gemini-1.5-flash';
+    return localStorage.getItem('sbv_regtech_model') || 'gemini-2.5-flash';
   });
 
   // Data Collections with LocalStorage caching
@@ -66,10 +63,6 @@ export function App() {
 
   // Sync to localStorage
   useEffect(() => {
-    localStorage.setItem('sbv_regtech_apikey', apiKey);
-  }, [apiKey]);
-
-  useEffect(() => {
     localStorage.setItem('sbv_regtech_model', selectedModel);
   }, [selectedModel]);
 
@@ -102,7 +95,7 @@ export function App() {
       title: '🔍 TAB 1: TRA CỨU & DẪN NGUỒN PHÁP LÝ (RAG Q&A)',
       shortTitle: 'Tra cứu RAG',
       icon: Search,
-      count: 'Zero-Hallucination'
+      count: 'Cần xác minh nguồn'
     },
     {
       id: 1,
@@ -124,8 +117,6 @@ export function App() {
     <div className="min-h-screen bg-slate-950 flex flex-col lg:flex-row font-sans selection:bg-sky-500 selection:text-white">
       {/* Sidebar */}
       <Sidebar
-        apiKey={apiKey}
-        setApiKey={setApiKey}
         selectedModel={selectedModel}
         setSelectedModel={setSelectedModel}
         activeTab={activeTab}
@@ -139,9 +130,9 @@ export function App() {
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header & 4 Metric Cards */}
           <Header
-            analyzedArticlesCount={35}
-            complianceReqsCount={12}
-            affectedProcessesCount={8}
+            analyzedArticlesCount={diffData.length}
+            complianceReqsCount={checklistData.length}
+            affectedProcessesCount={impactData.length}
           />
 
           {/* 3 Main Tab Buttons matching Streamlit */}
@@ -175,7 +166,6 @@ export function App() {
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 md:p-7 shadow-xl">
             {activeTab === 0 && (
               <Tab1RAG
-                apiKey={apiKey}
                 selectedModel={selectedModel}
                 onOpenKnowledgeBase={() => setIsKnowledgeBaseOpen(true)}
               />
