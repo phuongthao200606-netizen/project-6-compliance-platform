@@ -52,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="rounded-xl border border-slate-700/80 bg-gradient-to-br from-slate-800/90 to-slate-900/90 p-5 shadow-lg border-t-4 border-t-sky-400 transition hover:-translate-y-0.5 hover:shadow-sky-500/10">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              📄 Điều khoản Đã Phân tích
+              📄 Điều khoản trong bảng đối chiếu
             </span>
             <FileText className="h-4 w-4 text-sky-400" />
           </div>
@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
             {analyzedArticlesCount}
           </div>
           <div className="mt-1 text-xs font-medium text-sky-400">
-            2 Thông tư TT 09/2023 & TT 12/2024
+            Dữ liệu minh họa, cần đối chiếu văn bản gốc
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
             <RefreshCw className="h-4 w-4 text-amber-400" />
           </div>
           <div className="mt-3 text-3xl font-extrabold text-white">
-            0{affectedProcessesCount}
+            {affectedProcessesCount}
           </div>
           <div className="mt-1 text-xs font-medium text-amber-400">
             Tín dụng, QLRR, Core/LOS
@@ -100,15 +100,15 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="rounded-xl border border-slate-700/80 bg-gradient-to-br from-slate-800/90 to-slate-900/90 p-5 shadow-lg border-t-4 border-t-purple-400 transition hover:-translate-y-0.5 hover:shadow-purple-500/10">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              🎯 Độ chính xác Accuracy
+              🎯 Matching Accuracy (CV05)
             </span>
             <Target className="h-4 w-4 text-purple-400" />
           </div>
           <div className="mt-3 text-3xl font-extrabold text-white">
-            96.8%
+            Chưa có dữ liệu
           </div>
           <div className="mt-1 text-xs font-medium text-purple-400">
-            Zero Hallucination Guardrail
+            Chỉ hiển thị % sau khi chấm test thật
           </div>
         </div>
       </div>
