@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { Key, Eye, EyeOff, Users, BookOpen, Layers, CheckSquare, Search, RotateCcw } from 'lucide-react';
+import React from 'react';
+import { Key, Users, BookOpen, Layers, CheckSquare, Search, RotateCcw } from 'lucide-react';
 import { TEAM_MEMBERS } from '../data/initialData';
 
 interface SidebarProps {
-  apiKey: string;
-  setApiKey: (key: string) => void;
   selectedModel: string;
   setSelectedModel: (model: string) => void;
   activeTab: number;
@@ -14,8 +12,6 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  apiKey,
-  setApiKey,
   selectedModel,
   setSelectedModel,
   activeTab,
@@ -23,7 +19,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenKnowledgeBase,
   onResetData
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <aside className="w-full lg:w-80 shrink-0 bg-slate-900 border-r border-slate-800 p-5 flex flex-col justify-between space-y-6">
@@ -38,7 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               SBV RegTech Platform
             </h2>
             <span className="text-xs font-semibold text-sky-400">
-              Project 06 - Enterprise Edition
+              Project 6 • Group 1
             </span>
           </div>
         </div>
@@ -85,65 +80,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* API Key Configuration Section */}
-        <div className="rounded-xl border border-slate-700/80 bg-slate-850 bg-slate-900/60 p-4 space-y-3.5">
+        {/* API secrets must never be requested or saved in the browser. */}
+        <div className="rounded-xl border border-slate-700/80 bg-slate-900/60 p-4 space-y-3">
           <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
             <Key className="h-4 w-4 text-amber-400" />
-            <span>Cấu hình Google Gemini API</span>
+            <span>Gemini API (bảo mật phía server)</span>
           </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300 block">
-              Nhập Google Gemini API Key:
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Dán khóa AIzaSy... tại đây"
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent pr-9 font-mono"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
-                title={showPassword ? "Ẩn" : "Hiện"}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-            <p className="text-[11px] text-slate-400 leading-tight">
-              Nhập API key để kích hoạt gọi trực tiếp mô hình Gemini. Nếu để trống hệ thống kích hoạt Offline Engine.
-            </p>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300 block">
-              Mô hình LLM:
-            </label>
-            <select
-              value={selectedModel}
-              onChange={(e) => setSelectedModel(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent font-medium"
-            >
-              <option value="gemini-1.5-flash">gemini-1.5-flash (Nhanh & Tối ưu)</option>
-              <option value="gemini-1.5-pro">gemini-1.5-pro (Chuyên sâu)</option>
-              <option value="gemini-2.5-flash">gemini-2.5-flash (Thế hệ mới)</option>
-            </select>
-          </div>
-
-          {/* Key status indicator */}
-          {apiKey.trim() ? (
-            <div className="flex items-center gap-2 p-2 rounded-lg bg-emerald-950/40 border border-emerald-700/50 text-emerald-300 text-xs font-semibold">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
-              <span>🟢 API Key đã sẵn sàng.</span>
-            </div>
-          ) : (
-            <div className="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300 text-xs leading-relaxed">
-              💡 <span className="font-semibold text-sky-300">Chế độ Ngoại tuyến:</span> Tự động kích hoạt Offline Mock Engine mô phỏng RAG khi chưa nhập API key.
-            </div>
-          )}
+          <p className="text-xs text-slate-400">Khóa được đọc từ biến môi trường GEMINI_API_KEY của server. Không nhập API key tại trình duyệt. Khi chưa cấu hình, hệ thống sẽ báo lỗi thay vì sử dụng kết quả giả.</p>
+          <label className="text-xs font-semibold text-slate-300 block" htmlFor="sbv-model">Mô hình LLM</label>
+          <select
+            id="sbv-model"
+            value={selectedModel}
+            onChange={e => setSelectedModel(e.target.value)}
+            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"
+          >
+            <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+            <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+          </select>
+          <p className="text-[11px] text-amber-300">Có khóa không đồng nghĩa RAG đã được triển khai: bản này vẫn dùng dữ liệu pháp lý mẫu, cần xác minh nguồn.</p>
         </div>
 
         {/* Legal Knowledge Base & Data Controls */}
@@ -166,11 +120,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* Team 06 Information */}
+        {/* Team 01 Information */}
         <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5 text-xs space-y-2">
           <div className="flex items-center gap-2 font-bold text-amber-400">
             <Users className="h-4 w-4 text-amber-400" />
-            <span>Đội ngũ Phát triển (Nhóm 06)</span>
+            <span>Đội ngũ Phát triển (Nhóm 1)</span>
           </div>
 
           <div className="text-amber-300 font-semibold text-xs border-b border-slate-800 pb-1.5 flex items-center gap-1.5">
