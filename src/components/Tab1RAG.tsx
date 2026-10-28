@@ -5,13 +5,11 @@ import { processLegalQuery } from '../services/ragEngine';
 import { QueryResult } from '../types';
 
 interface Tab1RAGProps {
-  apiKey: string;
   selectedModel: string;
   onOpenKnowledgeBase: () => void;
 }
 
 export const Tab1RAG: React.FC<Tab1RAGProps> = ({
-  apiKey,
   selectedModel,
   onOpenKnowledgeBase
 }) => {
@@ -36,9 +34,7 @@ export const Tab1RAG: React.FC<Tab1RAGProps> = ({
     setResult(null);
 
     try {
-      // Simulate slight processing for realistic enterprise AI verification feel
-      await new Promise(r => setTimeout(r, 400));
-      const queryResult = await processLegalQuery(textToSearch, apiKey, selectedModel);
+      const queryResult = await processLegalQuery(textToSearch, selectedModel);
       setResult(queryResult);
     } catch {
       setResult({
@@ -167,7 +163,7 @@ export const Tab1RAG: React.FC<Tab1RAGProps> = ({
         <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
           <span className="flex items-center gap-1">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-            Bảo vệ Zero-Hallucination: Tự động cảnh báo từ chối (Refusal) nếu ngoài phạm vi TT 09/2023 & TT 12/2024.
+            Bảo vệ Chỉ có dữ liệu pháp lý tóm tắt; kết quả cần được xác minh với văn bản gốc.
           </span>
           <span className="hidden md:inline text-slate-400">Nhấn Enter để gửi</span>
         </div>
@@ -218,10 +214,7 @@ export const Tab1RAG: React.FC<Tab1RAGProps> = ({
               </div>
 
               {/* Main content body with HTML parsing */}
-              <div
-                className="text-slate-200 text-sm leading-relaxed whitespace-pre-line"
-                dangerouslySetInnerHTML={{ __html: result.text }}
-              />
+              <div className="text-slate-200 text-sm leading-relaxed whitespace-pre-line">{result.text}</div>
 
               {/* Legal Citation Card */}
               {result.citation && (
